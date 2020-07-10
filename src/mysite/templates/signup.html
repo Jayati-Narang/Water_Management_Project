@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div id="main">
+    <div class="site-section">
+      <div class="container" style="text-align: center">
+            <div class="container-login100">
+              <div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-50">
+                <span class="login100-form-title p-b-33">
+                    Signup
+                </span>
+          <form method="post">
+              <p style="font-size:17px;font-color:#000000;text-align:center"> Name </p>
+              <input style="font-size:17px;font-color:#000000;text-align:center" type="text" name="name" placeholder="" required="required">
+              <br>
+            {% csrf_token %}
+            {% for field in form %}
+              <p style="background-color:white">
+                  <br>
+                {{ field.label_tag }}<br>
+                {{ field }}
+                {% if field.help_text %}
+                {% endif %}
+                {% for error in field.errors %}
+                  <p style="color: red">{{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+            <br>
+            <br>
+            <button type="submit" class="button button2">Sign up</button>
+        </form>
+        </div>
+</div>
+</div>
+</div>
+{% endblock %}

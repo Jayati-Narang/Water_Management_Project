@@ -1,0 +1,81 @@
+{% extends '../base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+  <div class="site-wrap">
+    <div class="site-mobile-menu site-navbar-target">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+          <span class="icofont-close js-menu-toggle"></span>
+        </div>
+      </div>
+      <div class="site-mobile-menu-body"></div>
+    </div>
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-6 col-lg-2">
+            <!-- <h1 style="font-color:#000000"><class="mb-0">Water Management System</h1> -->
+          </div>
+        </div>
+      </div>
+
+    <div id="main">
+        <div class="site-section">
+          <div class="container" style="text-align: center">
+            <div class="container-login100">
+              <div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-50">
+                <span class="login100-form-title p-b-33">
+                    Account Login
+                </span>
+                <form method="POST" id="add_form" action="{% url 'login' %}">{% csrf_token %}
+                    <div class="form-group">
+						<div class="input"><input class="input100" type="text" name="username" placeholder="Username" required="required"></div>
+						<span class="focus-input100-1"></span>
+						<span class="focus-input100-2"></span>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input"><input class="input100" type="password" name="password" placeholder="Password" required="required"></div>
+                        <span class="focus-input100-1"></span>
+                        <span class="focus-input100-2"></span>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="container-login100-form-btn m-t-20">
+                            <label></label>
+                            <div class="submit">
+                                <button type="submit" class="login100-form-btn">Login</button>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="text-center">
+                        <span class="txt1">
+                            Create an account?
+                        </span>
+                    <a href="{% url 'signup' %}" class="txt2 hov1">
+                        Sign up
+                    </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="site-section">
+        </div>
+      </div>
+      <footer class="footer" role="contentinfo">
+        <div class="container">
+          <div class="row justify-content-center text-center">
+            <div class="col-md-7">
+              <h2> Contact Us</h2>
+              <p> Reach out to us to give feedbacks, to ask questions or to give reviews.</p>
+              <p> We respect constructive crticism :)</p>
+              </div>
+            </div>
+          </div>
+      </footer>
+  </div>
+
+{% endblock %}

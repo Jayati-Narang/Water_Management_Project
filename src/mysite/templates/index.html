@@ -1,0 +1,657 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <style>
+    /* svg {
+font-family: "Helvetica", "Arial", sans-serif;
+height: 425px;
+margin: 25px;
+width: 900px;
+} */
+
+.type {
+fill: #888;
+text-anchor: middle;
+}
+
+#shape {
+fill: #eee;
+stroke: #ccc;
+}
+</style>
+  <meta charset="utf-8">
+  <title>Water Management System in IIIT Hyderabad</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="" name="keywords">
+  <meta content="" name="description">
+
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,700|Roboto:300,400,700&display=swap"
+    rel="stylesheet">
+
+  <!-- Bootstrap CSS File -->
+
+  <link href="{%static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{%static 'vendor/icofont/icofont.min.css' %}" rel="stylesheet">
+  <link href="{%static 'vendor/line-awesome/css/line-awesome.min.css' %}" rel="stylesheet">
+  <link href="{%static 'vendor/aos/aos.css' %}" rel="stylesheet">
+  <link href="{%static 'vendor/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+  <script src="https://d3js.org/d3.v4.js"></script>
+  <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+  <link href="{%static 'css/style.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
+
+
+
+</head>
+
+<body>
+
+  <div class="site-wrap">
+
+    <div class="site-mobile-menu site-navbar-target">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+          <span class="icofont-close js-menu-toggle"></span>
+        </div>
+      </div>
+      <div class="site-mobile-menu-body"></div>
+    </div>
+
+    <header class="site-navbar js-sticky-header site-navbar-target" role="banner">
+
+      <div class="container">
+        <div class="row align-items-center">
+
+          <div class="col-6 col-lg-2">
+            <h1 class="mb-0 site-logo"><a href="index.html" class="mb-0">Water Management System</a></h1>
+          </div>
+
+          <div class="col-12 col-md-10 d-none d-lg-block">
+            <nav class="site-navigation position-relative text-right" role="navigation">
+
+              <ul class="site-menu main-menu js-clone-nav mr-auto d-none d-lg-block">
+                <li class="active" style="font-size:16px"><a href="#" class="nav-link">Home</a></li>
+                <li style="font-size:16px"><a href="#graphs" class="nav-link">Graphs</a></li>
+                <li style="font-size:16px"><a href="{% url 'ranking' %}" class="nav-link">Ranking</a></li>
+                <li style="font-size:16px"><a href="#leakagesD3" class="nav-link" >Leakages in the network</a></li>
+                <li style="font-size:16px"><a href="#contact" class="nav-link" style="font-size:16px">Contact</a></li>
+                <li style="font-size:16px"><a href="{%url 'logout' %}" class="nav-link" >Logout</a></li>   
+              </ul>
+            </nav>
+          </div>
+
+          <div class="col-6 d-inline-block d-lg-none ml-md-0 py-3" style="position: relative; top: 3px;">
+
+            <a href="#" class="burger site-menu-toggle js-menu-toggle" data-toggle="collapse"
+              data-target="#main-navbar">
+              <span></span>
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+    </header>
+
+
+    <div id="main">
+      <div class="hero-section">
+
+
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-12 hero-text-image">
+              <div class="row">
+                  
+                    <div class="maps" id="mapid" style="width: 1200px; height: 600px;">
+                      <svg></svg>
+                   </div>
+                    <!-- <style>
+                      #mapid { height: 700px; }
+                    </style> -->
+                    <script>
+
+                      var mymap = L.map('mapid');
+                      
+                      L.tileLayer(
+                          'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                          attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
+                          maxZoom: 25,
+                          }).addTo(mymap);
+                          mymap.setView([17.44555, 78.34854], 17);
+                          document.getElementById('mapid').style.display = 'block';
+                          mymap.invalidateSize();
+                      leakages = "{{ leakages }}";
+                            // console.log(leakages);
+                            // console.log("*****");
+                            // var json = JSON.parse('{!! $json !!}');
+                            leakages = leakages.replace(/&quot;/ig,'"');
+                            // console.log(leakages);
+                            leak = JSON.parse(leakages);
+                            // console.log(leak.ManjeeraNBHParijat);
+                            // console.log("100000000000");
+                            Object.keys(leak).forEach(function(key) {
+                              if(leak[key] != 0){
+
+                                if(key == "Pump3Vindhya" || key == "PumpP5Vindhya" || key == "ManjeeraVindhya"){
+                                    var marker = L.marker([17.44582,78.35017]).addTo(mymap);
+                                    marker.bindPopup('Leakage = ' + leak[key] + ' kl', {closePopupOnClick: false,closeOnClick:false, closeButton: false, autoClose: false}).openPopup();
+
+                                }
+                                else if(key == "Pump3GuestHouse" || key == "PumpP9GuestHouse"){
+                                  var marker = L.marker([17.44544, 78.34742]).addTo(mymap);
+                                  marker.bindPopup('Leakage = ' + leak[key] + ' kl', {closePopupOnClick: false,closeOnClick:false, closeButton: false, autoClose: false}).openPopup();
+                                }
+                                else if(key == "PumpP5Bakul"){
+                                  var marker = L.marker([17.44544, 78.34742]).addTo(mymap);
+                                  marker.bindPopup('Leakage = ' + leak[key] + ' kl', {closePopupOnClick: false,closeOnClick:false, closeButton: false, autoClose: false}).openPopup();
+                                }
+                                else if(key == "PumpP5Bakul"){
+                                  var marker = L.marker([17.44803,78.34839]).addTo(mymap);
+                                  marker.bindPopup('Leakage = ' + leak[key] + ' kl', {closePopupOnClick: false,closeOnClick:false, closeButton: false, autoClose: false}).openPopup();
+                                }
+                                else if(key == "PumpP9NBHParijat" || key == "ManjeeraNBHParijat"){
+                                  var marker = L.marker([17.44700,78.34757]).addTo(mymap);
+                                  marker.bindPopup('Leakage = ' + leak[key] + ' kl', {closePopupOnClick: false,closeOnClick:false, closeButton: false, autoClose: false}).openPopup();
+                                }
+                                else if(key == "PumpP8OBH"){
+                                  var marker = L.marker([17.44504,78.34592]).addTo(mymap);
+                                  marker.bindPopup('Leakage = ' + leak[key] + ' kl', {closePopupOnClick: false,closeOnClick:false, closeButton: false, autoClose: false}).openPopup();
+                                }
+                                else if(key == "PumpP10Himalaya"){
+                                  var marker = L.marker([17.44580,78.34883]).addTo(mymap);
+                                  marker.bindPopup('Leakage = ' + leak[key] + ' kl', {closePopupOnClick: false,closeOnClick:false, closeButton: false, autoClose: false}).openPopup();
+                                }                                
+                                else if(key == "PumpP1FacultyQuarters" || key == "ManjeeraFacultyQuarters"){
+                                  var marker = L.marker([17.44351,78.34851]).addTo(mymap);
+                                  marker.bindPopup('Leakage = ' + leak[key] + ' kl', {closePopupOnClick: false,closeOnClick:false, closeButton: false, autoClose: false}).openPopup();
+                                }
+                              }
+                            });
+                    
+                              
+                      // var marker_guestHouse = L.marker([17.44544, 78.34742]).addTo(mymap);
+                      // var marker_obh = L.marker([17.44502, 78.34595]).addTo(mymap);
+
+                      // marker_guestHouse.bindPopup('Leakage = 100', {closePopupOnClick: false,closeOnClick:false, closeButton: false, autoClose: false}).openPopup();
+                      // marker_obh.bindPopup('Leakage = 200', {closeOnClick: false, closeButton: false, autoClose: false}).openPopup();
+                      
+                  
+                      // m = L.marker({lon: 78.34847, lat: 17.44388}).bindLabel("200", { noHide: true }).bindPopup('<div id = "dialog-1-2" style="height:250px;"></div> ').on('popupopen',function(){draw(1);}).addTo(map);
+                      // m12=L.marker({lon: 78.34932, lat: 17.44583}).bindLabel(s12, { noHide: true }).bindPopup('<div id = "dialog-1-2">div>').addTo(map);
+                  </script>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="site-section">
+        <div class="container">
+
+          <div class="row justify-content-center text-center mb-5">
+            <div class="col-md-5" data-aos="fade-up">
+              <h2 class="section-heading">Data Visualization</h2>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="">
+              <div class="feature-1 text-center">
+                <div class="wrap-icon icon-1">
+                  <span class="icon la la-area-chart"></span>
+                </div>
+                <h3 class="mb-3">Total Consumption = {{ total_consumption_by_date }}</h3>
+
+              </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+              <div class="feature-1 text-center">
+                <div class="wrap-icon icon-1">
+                  <span class="icon la la-area-chart"></span>
+                </div>
+                <h3 class="mb-3">NRW = 30%</h3>
+              </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+              <div class="feature-1 text-center">
+                <div class="wrap-icon icon-1">
+                  <span class="icon la la-area-chart"></span>
+                </div>
+                <h3 class="mb-3">TDS = {{ tds }}</h3>
+              </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+              <div class="feature-1 text-center">
+                <div class="wrap-icon icon-1">
+                  <span class="icon la la-area-chart"></span>
+                </div>
+                <h3 class="mb-3">pH = 7</h3>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div> <!-- .site-section -->
+
+      <div class="site-section" id="graphs">
+        <div class="container">
+
+          <div class="row justify-content-center text-center mb-5">
+            <div class="col-md-5" data-aos="fade-up">
+              <h2 class="section-heading">Graphs</h2>
+            </div>
+          </div>
+
+            <div class="row">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="">
+            <!-- <div class="col-md-4 "> -->
+              <div class="feature-1 text-center">
+                <a href="{% url 'avg_consumption_2' %}">
+                  <img src="{% static 'images/avg_consumption_2.png' %}" height="250" width="300" class="image">
+
+                <div class="overlay overlayLeft">
+                  <div class="text">Average water consumed per building</div>
+                </div>
+              </a>
+              </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="">
+              <div class="feature-1 text-center">
+                <a href="{% url 'curr_week_consumption' %}">
+                  <img src="{% static 'images/curr_week_consumption.png' %}" height="250" width="300" class="image">
+
+                <div class="overlay overlayLeft">
+                  <div class="text">Water consumed in last 7 days</div>
+                </div>
+              </a>
+              </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="">
+              <div class="feature-1 text-center">
+                <a href="{% url 'season_consumption_sunburst' %}">
+                  <img src="{% static 'images/monthly_consumption.jpg' %}" height="250" width="400" class="image">
+
+                <div class="overlay overlayLeft">
+                  <div class="text">Month-wise distribution of average water consumed</div>
+                </div>
+              </a>
+              </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="">
+              <div class="feature-1 text-center">
+                <a href="{% url 'weekday_consumption' %}">
+                  <img src="{% static 'images/weekday_consumption.png' %}" height="250" width="300" class="image">
+
+                <div class="overlay overlayLeft">
+                  <div class="text">Day-wise distribution of average water consumed</div>
+                </div>
+              </a>
+              </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="">
+              <div class="feature-1 text-center">
+                <a href="{% url 'season_consumption' %}">
+                  <img src="{% static 'images/season_consumption.png' %}" height="250" width="300" class="image">
+                <div class="overlay overlayLeft">
+                  <div class="text">Season-wise distribution of average water consumed</div>
+                </div>
+              </a>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="site-section" id="leakagesD3">
+          <div class="leakagesD3">
+          <div class="container">
+            <!-- <div class="row align-items-center"> -->
+              <!-- <div class="col-12 hero-text-image"> -->
+                <div class="row justify-content-center text-center mb-5">
+                  <div class="col-12 hero-text-image">
+                  <!-- <div class="col-md-5" data-aos="fade-up"> -->
+                    <h2 class="section-heading"> Leakage in the network</h2>
+                    <h3>The red-highlighted source, destination and pipeline; shows that there is leakage in corresponding pipeline</h3>
+                <div class="row">
+                   <div class="graph">
+                    <!-- <iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~spaz_277/3.embed" height="700" width="400%"></iframe>  -->
+                    <svg width="1200" height="1000">
+                      
+                      <g transform="translate(200, 200)">
+                          <text id="Wrap" class="wrap" y="-20" x="40" font-size="40">
+                            Pumps
+                          </text>
+                          <text id="Wrap" class="wrap" y="-20" x="330" font-size="40">
+                            Buildings
+                          </text>
+
+                          <ellipse class="pump3" id="shape" cx="100" cy="50" rx="70" ry="30"></ellipse>
+                              <text id ="Wrap" class="wrap" y="60" x="90" font-size="40">
+                                  3
+                              </text>
+                          <ellipse class="pumpP5" id="shape" cx="100" cy="150" rx="70" ry="30"></ellipse>
+                              <text id ="Wrap" class="wrap" y="160" x="80" font-size="40">
+                                  P5
+                              </text>
+                          <ellipse class="pumpP9" id="shape" cx="100" cy="250" rx="70" ry="30"></ellipse>
+                              <text id ="Wrap" class="wrap" y="260" x="80" font-size="40">
+                                  P9
+                              </text>
+                          <ellipse class="pumpP8" id="shape" cx="100" cy="350" rx="70" ry="30"></ellipse>
+                              <text id ="Wrap" class="wrap" y="360" x="80" font-size="40">
+                                  P8
+                              </text>
+                          <ellipse class="pumpP10" id="shape" cx="100" cy="450" rx="70" ry="30"></ellipse>
+                              <text id ="Wrap" class="wrap" y="460" x="67" font-size="40">
+                                  P10
+                              </text>
+                          <ellipse class="pumpP1" id="shape" cx="100" cy="550" rx="70" ry="30"></ellipse>
+                              <text id ="Wrap" class="wrap" y="560" x="80" font-size="40">
+                                  P1
+                              </text>
+
+                          <ellipse class="manjeera" id="shape" cx="810" cy="350" rx="100" ry="30"></ellipse>
+                              <text id ="Wrap" class="wrap" y="360" x="750" font-size="28">
+                                  Manjeera
+                              </text>
+
+
+                          <ellipse class="Vindhya" id="shape" cx="410" cy="50" rx="80" ry="30"></ellipse>
+                              <text id ="Wrap" class="wrap" y="60" x="355" font-size="28">
+                                  Vindhya
+                              </text>
+                          <ellipse class="Bakul" id="shape" cx="410" cy="150" rx="70" ry="30"></ellipse>
+                              <text id ="Wrap" class="wrap" y="160" x="366" font-size="28">
+                                  Bakul
+                              </text>
+                          <ellipse class="NBHParijat" id="shape" cx="450" cy="250" rx="130" ry="30"></ellipse>
+                              <text id ="Wrap" class="wrap" y="260" x="350" font-size="28">
+                                  NBH & Parijat
+                              </text>
+                          <ellipse class="OBH" id="shape" cx="400" cy="350" rx="70" ry="30"></ellipse>
+                              <text id ="Wrap" class="wrap" y="360" x="364" font-size="28">
+                                  OBH
+                              </text>
+                          <ellipse class="Himalaya" id="shape" cx="420" cy="450" rx="90" ry="30"></ellipse>
+                              <text id ="Wrap" class="wrap" y="460" x="358" font-size="28">
+                                  Himalaya
+                              </text>
+                          <ellipse class="FacultyQuarters" id="shape" cx="450" cy="550" rx="135" ry="30"></ellipse>
+                              <text id ="Wrap" class="wrap" y="560" x="334" font-size="28">
+                                  Faculty Quarters
+                              </text>
+                          <ellipse class="GuestHouse" id="shape" cx="450" cy="650" rx="120" ry="30"></ellipse>
+                              <text id ="Wrap" class="wrap" y="660" x="360" font-size="28">
+                                  Guest House
+                              </text>
+
+                   
+                         <defs>
+                              <marker id="arrowhead" markerWidth="10" markerHeight="7"
+                                  refX="0" refY="3.5" orient="auto">
+                                  <polygon points="0 0, 10 3.5, 0 7" />
+                              </marker>
+                              <marker id="arrowheadInvert" markerWidth="10" markerHeight="7"
+                              refX="0" refY="3.5" orient="auto">
+                              <polygon points="0 3.5, 10 0, 10 7" />
+                          </marker>
+                          </defs>
+
+
+                          <line class="Pump3Vindhya" x1="170" y1="50" x2="310" y2="50" stroke="#000"
+                                stroke-width="2" marker-end="url(#arrowhead)" />
+
+                          <line class="Pump3GuestHouse" x1="170" y1="50" x2="325" y2="630" stroke="#000"
+                                stroke-width="2" marker-end="url(#arrowhead)" />
+
+                          <line class="PumpP5Vindhya" x1="170" y1="150" x2="320" y2="70" stroke="#000"
+                                stroke-width="2" marker-end="url(#arrowhead)" />
+
+                          <line class="PumpP5Bakul" x1="170" y1="150" x2="320" y2="150" stroke="#000"
+                                stroke-width="2" marker-end="url(#arrowhead)" />
+
+                          <line class="PumpP9NBHParijat" x1="170" y1="250" x2="300" y2="250" stroke="#000"
+                                stroke-width="2" marker-end="url(#arrowhead)" />
+
+                          <line class="PumpP9GuestHouse" x1="170" y1="250" x2="320" y2="640" stroke="#000"
+                                stroke-width="2" marker-end="url(#arrowhead)" />
+
+                          <line class="PumpP8OBH" x1="170" y1="350" x2="310" y2="350" stroke="#000"
+                                stroke-width="2" marker-end="url(#arrowhead)" />
+
+                          <line class="PumpP10Himalaya" x1="170" y1="450" x2="310" y2="450" stroke="#000"
+                                stroke-width="2" marker-end="url(#arrowhead)" />
+
+                          <line class="PumpP1FacultyQuarters" x1="170" y1="550" x2="295" y2="550" stroke="#000"
+                             stroke-width="2" marker-end="url(#arrowhead)" />
+
+                          <line class="ManjeeraVindhya" x1="490" y1="50" x2="710" y2="345" stroke="#000"
+                             stroke-width="2" marker-start="url(#arrowheadInvert)" />
+
+                          <line class="ManjeeraNBHParijat" x1="550" y1="267" x2="710" y2="345" stroke="#000"
+                             stroke-width="2" marker-start="url(#arrowheadInvert)" />
+
+                          <line class="ManjeeraFacultyQuarters" x1="580" y1="540" x2="710" y2="345" stroke="#000"
+                             stroke-width="2" marker-start="url(#arrowheadInvert)" />
+
+                          </g>
+                          </svg>
+                          <script>
+                            // console.log(d3.select(".vindhyaPump3"));
+                            leakages = "{{ leakages }}";
+                            console.log(leakages);
+                            console.log("*****");
+                            // var json = JSON.parse('{!! $json !!}');
+                            leakages = leakages.replace(/&quot;/ig,'"');
+                            console.log(leakages);
+                            leak = JSON.parse(leakages);
+                            console.log(leak.ManjeeraNBHParijat);
+                            console.log("100000000000");
+                            Object.keys(leak).forEach(function(key) {
+                              var pump, building, value = 0, pipe;
+                              if(leak[key] != 0){
+                                if(key == "Pump3Vindhya"){
+                                  pipe = ".Pump3Vindhya";
+                                  pump = ".pump3";
+                                  building = ".Vindhya";
+                                  value = leak[key];
+                                }
+                                else if(key == "Pump3GuestHouse"){
+                                  pipe = ".Pump3GuestHouse";
+                                  pump = ".pump3";
+                                  building = ".GuestHouse";
+                                  value = leak[key];
+                                }
+                                else if(key == "PumpP5Vindhya"){
+                                  pipe = ".PumpP5Vindhya";
+                                  pump = ".pumpP5";
+                                  building = ".Vindhya";
+                                  value = leak[key];
+                                }
+                                else if(key == "PumpP9NBHParijat"){
+                                  pipe = ".PumpP9NBHParijat";
+                                  pump = ".pumpP9";
+                                  building = ".NBHParijat";
+                                  value = leak[key];
+                                }
+                                else if(key == "PumpP5Bakul"){
+                                  pipe = ".PumpP5Bakul";
+                                  pump = ".pumpP5";
+                                  building = ".Bakul";
+                                  value = leak[key];
+                                }
+                                else if(key == "PumpP9GuestHouse"){
+                                  pipe = ".PumpP9GuestHouse";
+                                  pump = ".pumpP9";
+                                  building = ".GuestHouse";
+                                  value = leak[key];
+                                }
+                                else if(key == "PumpP8OBH"){
+                                  pipe = ".PumpP8OBH";
+                                  pump = ".pumpP8";
+                                  building = ".OBH";
+                                  value = leak[key];
+                                }
+                                else if(key == "PumpP10Himalaya"){
+                                  pipe = ".PumpP10Himalaya";
+                                  pump = ".pumpP10";
+                                  building = ".Himalaya";
+                                  value = leak[key];
+                                }
+                                else if(key == "PumpP1FacultyQuarters"){
+                                  pipe = ".PumpP1FacultyQuarters";
+                                  pump = ".pumpP1";
+                                  building = ".FacultyQuarters";
+                                  value = leak[key];
+                                }
+                                else if(key == "PumpP10Himalaya"){
+                                  pipe = ".PumpP10Himalaya";
+                                  pump = ".pumpP10";
+                                  building = ".Himalaya";
+                                  value = leak[key];
+                                }
+                                else if(key == "ManjeeraVindhya"){
+                                  pipe = ".ManjeeraVindhya";
+                                  pump = ".manjeera";
+                                  building = ".Vindhya";
+                                  value = leak[key];
+                                }
+                                else if(key == "ManjeeraNBHParijat"){
+                                  pipe = ".ManjeeraNBHParijat";
+                                  pump = ".manjeera";
+                                  building = ".NBHParijat";
+                                  value = leak[key];
+                                }
+                                else if(key == "ManjeeraFacultyQuarters"){
+                                  pipe = ".ManjeeraFacultyQuarters";
+                                  pump = ".manjeera";
+                                  building = ".FacultyQuarters";
+                                  value = leak[key];
+                                }
+
+                                
+
+                                d3.select(pipe)
+                                        .style("stroke", "rgb(220,20,60)")
+                                        .on("mouseover", function(d){
+                                          return tooltip.style("visibility", "visible").text("Leakage = " + value + "kl");
+                                        })
+                                        .on("mousemove", function(d){
+                                          return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px").text("Leakage = " + value + "kl");
+
+                                        })
+                                        .on("mouseout", function(d){
+                                          return tooltip.style("visibility", "hidden");
+                                        });
+
+                                    d3.select(pump)
+                                        .style("fill", "rgb(220,20,60)");
+                                        // .on("mouseover", function(d){
+                                        //   return tooltip.style("visibility", "visible").text("Leakage = " + value + "kl");
+                                        // })
+                                        // .on("mousemove", function(d){
+                                        //   return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px").text("Leakage = " + value + "kl");
+
+                                        // })
+                                        // .on("mouseout", function(d){
+                                        //   return tooltip.style("visibility", "hidden");
+                                        // });
+                                    d3.select(building)
+                                        .style("fill", "rgb(220,20,60)");
+                                        // .on("mouseover", function(d){
+                                        //   return tooltip.style("visibility", "visible").text("Leakage = " + value + "kl");
+                                        // })
+                                        // .on("mousemove", function(d){
+                                        //   return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px").text("Leakage = " + value + "kl");
+
+                                        // })
+                                        // .on("mouseout", function(d){
+                                        //   return tooltip.style("visibility", "hidden");
+                                        // });
+
+
+
+                              }
+                            
+                            });
+                            
+
+                            var tooltip = d3.select("body")
+                                .append("div")
+                                .style("position", "absolute")
+                                .style("font-family", "'Open Sans', sans-serif")
+                                .style("font-size", "30px")
+                                .style("color", "black")
+                                .style("z-index", "10")
+                                .style("visibility", "hidden");
+
+
+
+
+                            </script>
+                  </div> 
+
+              </div> 
+            </div>
+          </div> 
+          </div>
+      </div> <!-- .site-section -->
+      <div class="site-section" id="contact">
+        <div class="container">
+
+          <div class="row justify-content-center text-center mb-5">
+            <div class="col-md-5" data-aos="fade-up">
+              <h2 class="section-heading">Contacts</h2>
+           
+                <ul> 
+                  <li> <b> Head of Engineering department </b> <p> <b>IIIT-Hyderabad</b><br/> Contact No. : 9123121121 <br/> Email Id: head_2@iiit.ac.in </p></li>
+                  <li> <b> Head of Water department </b> <p> <b>IIIT-Hyderabad</b><br/> Contact No. : 9112175454 <br/> Email Id: sample@iiit.ac.in </p></li>
+    
+                </ul>
+            </div>
+          
+        </div>
+      </div>
+
+      <footer class="footer" role="contentinfo">
+        <div class="container">
+          <div class="row justify-content-center text-center">
+            <div class="col-md-7">
+              
+              <p> Reach out to us to give feedbacks, to ask questions or to give reviews.</p>
+              
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
+  <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+
+  <script src="{%static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{%static 'vendor/jquery/jquery-migrate.min.js' %}"></script>
+  <script src="{%static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+  <script src="{%static 'vendor/easing/easing.min.js' %}"></script>
+  <script src="{%static 'vendor/php-email-form/validate.js' %}"></script>
+  <script src="{%static 'vendor/sticky/sticky.js' %}"></script>
+  <script src="{%static 'vendor/aos/aos.js' %}"></script>
+  <script src="{%static 'vendor/owlcarousel/owl.carousel.min.js' %}"></script>
+
+  <script src="{%static 'js/main.js' %}"></script>
+
+</body>
+
+</html>

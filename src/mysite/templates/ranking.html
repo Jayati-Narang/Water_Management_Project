@@ -1,0 +1,205 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Water Management System in IIIT Hyderabad</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="" name="keywords">
+  <meta content="" name="description">
+
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,700|Roboto:300,400,700&display=swap"
+    rel="stylesheet">
+
+  <!-- Bootstrap CSS File -->
+
+  <link href="{%static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{%static 'vendor/icofont/icofont.min.css' %}" rel="stylesheet">
+  <link href="{%static 'vendor/line-awesome/css/line-awesome.min.css' %}" rel="stylesheet">
+  <link href="{%static 'vendor/aos/aos.css' %}" rel="stylesheet">
+  <link href="{%static 'vendor/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+
+  <link href="{%static 'css/style.css' %}" rel="stylesheet">
+
+
+
+
+</head>
+
+<body>
+
+  <div class="site-wrap">
+
+    <div class="site-mobile-menu site-navbar-target">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+          <span class="icofont-close js-menu-toggle"></span>
+        </div>
+      </div>
+      <div class="site-mobile-menu-body"></div>
+    </div>
+
+    <header class="site-navbar js-sticky-header site-navbar-target" role="banner">
+
+      <div class="container">
+        <div class="row align-items-center">
+
+          <div class="col-6 col-lg-2">
+            <h1 class="mb-0 site-logo"><a href="index.html" class="mb-0">Water Management System</a></h1>
+          </div>
+
+          <div class="col-12 col-md-10 d-none d-lg-block">
+            <nav class="site-navigation position-relative text-right" role="navigation">
+
+              <ul class="site-menu main-menu js-clone-nav mr-auto d-none d-lg-block">
+                <li style="font-size:16px"><a href="{% url 'index' %}" class="nav-link">Home</a></li>
+                <li style="font-size:16px"><a href="{% url 'index' %}#graphs" class="nav-link">Graphs</a></li>
+                <li class="active" style="font-size:16px"><a href="" class="nav-link">Ranking</a></li>
+
+                <li class="has-children">
+                  <a href="#" class="nav-link" style="font-size:16px">Consumption</a>
+                  <ul class="dropdown">
+                    <li><a href="#" class="nav-link" style="font-size:16px">Based on day of week</a></li>
+                    <li><a href="#" class="nav-link" style="font-size:16px">Based on usage</a></li>
+                  </ul>
+                </li>
+                <li><a href="#" class="nav-link" style="font-size:16px">Contact</a></li>
+              </ul>
+            </nav>
+          </div>
+
+
+          <div class="col-6 d-inline-block d-lg-none ml-md-0 py-3" style="position: relative; top: 3px;">
+
+            <a href="#" class="burger site-menu-toggle js-menu-toggle" data-toggle="collapse"
+              data-target="#main-navbar">
+              <span></span>
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+    </header>
+
+
+    <div id="main">
+        <div class="site-section">
+          <div class="container">
+
+            <div class="row justify-content-center text-center mb-5">
+              <div class="col-md-5" data-aos="fade-up">
+                <h2 class="section-heading">Ranking by blocks</h2>
+              </div>
+            </div>
+        <div class="panel panel-primary filterable">
+            <div class="panel-heading">
+                <div class="pull-right">
+                    <button class="btn btn-default btn-xs btn-filter" style="font-size:20px"><span class="glyphicon glyphicon-filter"></span> Filter</button>
+                </div>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr class="filters">
+                        <th><input type="text" class="form-control" placeholder="Block" disabled style="font-size:23px;text-align:center"></th>
+                        <th><input type="text" class="form-control" placeholder="Consumption per person(in kl)" disabled style="font-size:23px;text-align:center"></th>
+                    </tr>
+                </thead>
+                {% for key, value in avg_block.items %}
+                <tbody>
+                    <tr>
+                        <td style="font-size:28px;text-align:center">{{key}}</td>
+                        <td style="font-size:28px;text-align:center">{{value}}</td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+    </div>
+          </div>
+        </div>
+      <div class="site-section">
+      </div> <!-- .site-section -->
+
+      </div>
+      <footer class="footer" role="contentinfo">
+        <div class="container">
+          <div class="row justify-content-center text-center">
+            <div class="col-md-7">
+              <h2> Contact Us</h2>
+              <p> Reach out to us to give feedbacks, to ask questions or to give reviews.</p>
+              <p> We respect constructive crticism :)</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </footer>
+    </main>
+
+  </div>
+
+  <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+
+  <script src="{%static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{%static 'vendor/jquery/jquery-migrate.min.js' %}"></script>
+  <script src="{%static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+  <script src="{%static 'vendor/easing/easing.min.js' %}"></script>
+  <script src="{%static 'vendor/php-email-form/validate.js' %}"></script>
+  <script src="{%static 'vendor/sticky/sticky.js' %}"></script>
+  <script src="{%static 'vendor/aos/aos.js' %}"></script>
+  <script src="{%static 'vendor/owlcarousel/owl.carousel.min.js' %}"></script>
+
+  <script src="{%static 'js/main.js' %}"></script>
+  <script>
+$(document).ready(function(){
+  $('.filterable .btn-filter').click(function(){
+      var $panel = $(this).parents('.filterable'),
+      $filters = $panel.find('.filters input'),
+      $tbody = $panel.find('.table tbody');
+      if ($filters.prop('disabled') == true) {
+          $filters.prop('disabled', false);
+          $filters.first().focus();
+      } else {
+          $filters.val('').prop('disabled', true);
+          $tbody.find('.no-result').remove();
+          $tbody.find('tr').show();
+      }
+  });
+
+  $('.filterable .filters input').keyup(function(e){
+      /* Ignore tab key */
+      var code = e.keyCode || e.which;
+      if (code == '9') return;
+      /* Useful DOM data and selectors */
+      var $input = $(this),
+      inputContent = $input.val().toLowerCase(),
+      $panel = $input.parents('.filterable'),
+      column = $panel.find('.filters th').index($input.parents('th')),
+      $table = $panel.find('.table'),
+      $rows = $table.find('tbody tr');
+      /* Dirtiest filter function ever ;) */
+      var $filteredRows = $rows.filter(function(){
+          var value = $(this).find('td').eq(column).text().toLowerCase();
+          return value.indexOf(inputContent) === -1;
+      });
+      /* Clean previous no-result if exist */
+      $table.find('tbody .no-result').remove();
+      /* Show all rows, hide filtered ones (never do that outside of a demo ! xD) */
+      $rows.show();
+      $filteredRows.hide();
+      /* Prepend no-result row if all rows are filtered */
+      if ($filteredRows.length === $rows.length) {
+          $table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="'+ $table.find('.filters th').length +'">No result found</td></tr>'));
+      }
+  });
+});
+  </script>
+</body>
+
+</html>

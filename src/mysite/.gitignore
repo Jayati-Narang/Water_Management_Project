@@ -1,0 +1,7 @@
+/mysite/__pycache__/*
+/mysite/settings.py
+/water/__pycache__/*
+/ssad_project/*
+/login/__pycache__/*
+/signup/__pycache__/*
+/water/migrations/__pycache__/*

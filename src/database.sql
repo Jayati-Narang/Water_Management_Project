@@ -1,0 +1,4 @@
+
+
+CREATE DATABASE consumption; USE consumption; CREATE TABLE final ( Sno smallint not null,                      RecDate  DATE,                      old_qtr DECIMAL(5,2),                      ananda_nivas DECIMAL(5,2),                      budha_nivas DECIMAL(5,2),                      palash DECIMAL(5,2),                      kadamb DECIMAL(5,2),                      parijaat DECIMAL(5,2),                      bakul DECIMAL(5,2),                      sahana_aithi_house DECIMAL(5,2),                      nilgiri DECIMAL(5,2),                      vindhya DECIMAL(5,2),                      admin_block DECIMAL(5,2),                      krb DECIMAL(5,2),                      bodh DECIMAL(5,2),                      total_in_kl DECIMAL(5,2),                      type_of_reading VARCHAR(255) );
+
